@@ -19,6 +19,7 @@ SEVERITY = {
 SEVERITY.update((name, name) for name in SEVERITY.values())
 
 
+# 记录最近的日志消息
 def log_recent(conn, name, message, severity=logging.INFO, pipe=None):
     severity = str(SEVERITY.get(severity, severity).lower())
     destination = 'recent:%s:%s' % (name, severity)
@@ -27,3 +28,12 @@ def log_recent(conn, name, message, severity=logging.INFO, pipe=None):
     pipe.lpush(destination, message)
     pipe.ltrim(destination, 0, 99)  # 只包含最新的100条日志消息
     pipe.execute()
+
+
+# 记录常出现的日志消息
+def log_common(conn, name, message, severity=logging.INFO, timeout=5):
+    severity = str(SEVERITY.get(severity, severity).lower())
+    destination = 'common:%s:%s' % (name, name)
+    start_key = destination + ':start'
+    pipe = conn.pipeline()
+
