@@ -14,6 +14,7 @@ SEVERITY = {
 
 }
 
+
 #update()函数把字典(name,name)的键/值对更新到SEVERITY里
 SEVERITY.update((name, name) for name in SEVERITY.values())
 
